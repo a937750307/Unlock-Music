@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="webkit" name="renderer">
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <title>Unlock Music-音乐解锁</title>
+  <meta content="音乐,解锁,ncm,qmc,mgg,mflac,qq音乐,网易云音乐,加密" name="keywords">
+  <meta content="音乐解锁 - 在任何设备上解锁已购的加密音乐！" name="description">
+  <style>
+    #loader {
+      position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1010;
+        margin: -75px 0 0 -75px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #1db1ff;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      #loader-mask {
+        text-align: center;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 1009;
+        background-color: rgba(242, 246, 252, 0.88);
+      }
+      @media (prefers-color-scheme: dark) {
+        #loader-mask {
+          color: #fff;
+          background-color: rgba(0, 0, 0, 0.85);
+        }
+        #loader-mask a {
+          color: #ddd;
+        }
+        #loader-mask a:hover {
+          color: #1db1ff;
+        }
+      }
+      #loader-source {
+        font-size: 1.5rem;
+      }
+      #loader-tips-timeout {
+        font-size: 1.2rem;
+      }
+    @keyframes spin {
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    #loader-mask {
+      text-align: center;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 1009;
+      background-color: rgba(242, 246, 252, 0.88);
+    }
+    @media (prefers-color-scheme: dark) {
+      #loader-mask {
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.85);
+      }
+      #loader-mask a {
+        color: #ddd;
+      }
+      #loader-mask a:hover {
+        color: #1db1ff;
+      }
+    }
+    #loader-source {
+      font-size: 1.5rem;
+    }
+    #loader-tips-timeout {
+      font-size: 1.2rem;
+    }
+  </style>
+  <link href="css/app.5388e39c.css" rel="preload" as="style">
+  <link href="css/chunk-vendors.094863c6.css" rel="preload" as="style">
+  <link href="js/app.e29ffaed.js" rel="preload" as="script">
+  <link href="js/chunk-vendors.5db7ca01.js" rel="preload" as="script">
+  <link href="css/chunk-vendors.094863c6.css" rel="stylesheet">
+  <link href="css/app.5388e39c.css" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./img/icons/favicon-16x16.png">
+  <link rel="manifest" href="web-manifest.json">
+  <meta name="theme-color" content="#4DBA87">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="音乐解锁">
+  <link rel="apple-touch-icon" href="./img/icons/apple-touch-icon-152x152.png">
+  <link rel="mask-icon" href="./img/icons/safari-pinned-tab.svg" color="#4DBA87">
+  <meta name="msapplication-TileImage" content="./img/icons/msapplication-icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#000000">
+</head>
+<style>
+  #main-navbar {
+    width: 100%;
+    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 56px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+  }
+  .navbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #fff;
+  }
+  .navbar-links {
+    display: flex;
+    gap: 16px;
+  }
+  .navbar-btn {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    margin-left: 8px;
+  }
+  .navbar-btn:hover {
+    background: #1db1ff;
+    color: #fff;
+  }
+  @media (max-width: 600px) {
+    #main-navbar {
+      flex-direction: column;
+      height: auto;
+      padding: 8px 4px;
+      align-items: flex-start;
+    }
+    .navbar-title {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+      padding-left: 2px;
+    }
+    .navbar-links {
+      gap: 8px;
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .navbar-btn {
+      font-size: 0.98rem;
+      padding: 7px 12px;
+      margin-left: 0;
+    }
+  }
+  body {
+    margin: 0;
+    padding-top: 56px;
+  }
+  #beian-footer {
+    width: 100%;
+    background: #222;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 3000;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px 6px 12px;
+    font-size: 14px;
+    box-sizing: border-box;
+    gap: 18px;
+    letter-spacing: 0.5px;
+  }
+  .beian-tips {
+    color: #ffd600;
+    margin-right: 12px;
+  }
+  .beian-icp {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 12px;
+    transition: color 0.2s;
+  }
+  .beian-icp:hover {
+    color: #1db1ff;
+    text-decoration: underline;
+  }
+  .beian-gongan {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+  }
+  .beian-gongan:hover {
+    color: #1db1ff;
+    text-decoration: underline;
+  }
+  .beian-gongan-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 2px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  @media (max-width: 600px) {
+    #beian-footer {
+      font-size: 12px;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 4px 6px 4px;
+    }
+    .beian-tips, .beian-icp {
+      margin-right: 0;
+    }
+  }
+  body {
+    margin: 0 auto;
+    padding-top: 56px;
+    padding-bottom: 44px; /* 防止被备案footer遮挡，略大于footer高度 */
+    min-width: 0;
+    overflow-x: hidden;
+    max-width: 100vw;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  #app {
+    max-width: 100vw;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 44px; /* 防止被备案footer遮挡 */
+  }
+#loader-mask {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+</style>
+</head>
+<body>
+  <nav id="main-navbar">
+    <div class="navbar-title">Unlock Music音乐解锁</div>
+    <div class="navbar-links">
+      <a class="navbar-btn" href="https://www.937788.xyz" target="_blank">忆痕·发布页</a>
+      <a class="navbar-btn" href="https://github.com/a937750307" target="_blank">Github</a>
+    </div>
+  </nav>
+  <div id="loader-mask">
+    <div id="loader"></div>
+    <noscript><h3 id="loader-js">请启用JavaScript</h3></noscript>
+    <h3 id="loader-source">请勿直接运行源代码！</h3>
+    <div id="loader-tips-outdated" hidden>
+      <h2>您可能在使用不受支持的<span style="color: #f00">过时</span>浏览器，这可能导致此应用无法正常工作。</h2>
+      <h3>如果您使用双核浏览器，您可以尝试切换到 <span style="color: #f00">“极速模式”</span> 解决此问题。</h3>
+      <h3>或者，您可以尝试更换下方的几个浏览器之一。</h3>
+    </div>
+  </div>
+  <div id="app"></div>
+    <footer id="beian-footer">
+      <span class="beian-tips">本站内容仅供学习和交流，非商业用途</span>
+      <a class="beian-icp" href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2025187466号</a>
+      <a class="beian-gongan" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33030402001483" target="_blank">
+        <img src="https://www.937788.xyz/gonganbeian.png" alt="公安备案" class="beian-gongan-icon"/>
+        公安备案浙公网安备33030402001483号
+      </a>
+    </footer>
+  <script src="./loader.js"></script>
+  <script src="js/chunk-vendors.5db7ca01.js"></script>
+  <script src="js/app.e29ffaed.js"></script>
+</body>
+</html>
